@@ -11,6 +11,8 @@ from src.game_elements.Bot import *
 from src.game_elements.Gameplay import *
 from src.game_elements.Shooter import *
 
+from src.game_configs.Config_difficult_level import config_difficult_level_easy, config_difficult_level_medium, config_difficult_level_hard
+
 
 main_clock = pygame.time.Clock()
 
@@ -106,34 +108,13 @@ class StartScreen:
         function sets game aspects depending on chosen difficulty level
         """
         if self.difficulty_level == "łatwy":
-            self.dict_difficulty_config["bot_speed"] = 0.9
-            self.dict_difficulty_config["bot_hitpoints"] = 92
-            self.dict_difficulty_config["bot_damage"] = 18
-            self.dict_difficulty_config["bot_attack_frequency"] = 0.7
-            self.dict_difficulty_config["gunpack_frequency"] = 6
-            self.dict_difficulty_config["gunpack_max_amount"] = 4
-            self.dict_difficulty_config["ammo_amount"] = "duży"
-            self.dict_difficulty_config["hp_restore"] = "duży"
+            self.dict_difficulty_config = config_difficult_level_easy
 
         elif self.difficulty_level == "średni":
-            self.dict_difficulty_config["bot_speed"] = 1.1
-            self.dict_difficulty_config["bot_hitpoints"] = 100
-            self.dict_difficulty_config["bot_damage"] = 20
-            self.dict_difficulty_config["bot_attack_frequency"] = 0.55
-            self.dict_difficulty_config["gunpack_frequency"] = 7
-            self.dict_difficulty_config["gunpack_max_amount"] = 3
-            self.dict_difficulty_config["ammo_amount"] = "średni"
-            self.dict_difficulty_config["hp_restore"] = "średni"
+            self.dict_difficulty_config = config_difficult_level_medium
 
         elif self.difficulty_level == "trudny":
-            self.dict_difficulty_config["bot_speed"] = 1.35
-            self.dict_difficulty_config["bot_hitpoints"] = 115
-            self.dict_difficulty_config["bot_damage"] = 22
-            self.dict_difficulty_config["bot_attack_frequency"] = 0.4
-            self.dict_difficulty_config["gunpack_frequency"] = 9
-            self.dict_difficulty_config["gunpack_max_amount"] = 3
-            self.dict_difficulty_config["ammo_amount"] = "niski"
-            self.dict_difficulty_config["hp_restore"] = "niski"
+            self.dict_difficulty_config = config_difficult_level_hard
 
     def main_menu(self):
         """

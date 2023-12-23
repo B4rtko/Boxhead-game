@@ -1,5 +1,5 @@
 # pycache and editor cache
-__pycache__/*
+**/__pycache__
 .idea/*
 
 # virtual environment
