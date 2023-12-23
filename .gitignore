@@ -1,0 +1,9 @@
+# pycache and editor cache
+__pycache__/*
+.idea/*
+
+# virtual environment
+.venv/*
+
+# unrelevalt images
+grafika_menu/obraz_przed_pauza.png
