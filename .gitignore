@@ -5,5 +5,7 @@ __pycache__/*
 # virtual environment
 .venv/*
 
-# unrelevalt images
-grafika_menu/obraz_przed_pauza.png
+# unrelevalt media
+src/media_elements/grafika_menu/obraz_przed_pauza.png
+src/media_elements/ostatni_stan.txt
+src/media_elements/tablica_wynikow.txt
