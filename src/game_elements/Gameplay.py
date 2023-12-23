@@ -1,7 +1,7 @@
 import random
 import time
 
-from Bot import Bot
+from src.game_elements.Bot import Bot
 
 
 class GamePlay:

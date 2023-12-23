@@ -4,7 +4,7 @@ import random
 import pygame
 from pygame.math import Vector2
 
-from Shooter import GunPistol, GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower
+from src.game_elements.Shooter import GunPistol, GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower
 
 
 class Arena(object):
