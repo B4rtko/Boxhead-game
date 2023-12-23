@@ -12,6 +12,7 @@ from src.game_elements.Gameplay import *
 from src.game_elements.Shooter import *
 
 from src.game_configs.Config_difficult_level import config_difficult_level_easy, config_difficult_level_medium, config_difficult_level_hard
+from src.game_configs.Config_controls import ConfigControls
 
 
 main_clock = pygame.time.Clock()
@@ -78,12 +79,12 @@ class StartScreen:
                 data.append(param)
                 last_data += param_end + 3
 
+            # data[0] is map indicator in config file and there are 5 maps available, so the value needs to be between 1 and 5
             if data[0] in ["1", "2", "3", "4", "5"]:
                 self.map_layout = int(data[0])
             else: raise ValueError
 
-            self.control_buttons = {"góra": int(data[1]), "dół": int(data[2]), "lewo": int(data[3]), "prawo": int(data[4]),
-                                    "strzał": int(data[5]), "następna": int(data[6]), "poprzednia": int(data[7])}
+            self.control_buttons = ConfigControls(*[int(data[i]) for i in range(1, 8)])
 
             if data[8] in ["łatwy", "średni", "trudny"]:
                 self.difficulty_level = data[8]
@@ -95,8 +96,7 @@ class StartScreen:
                 self.muted = False
 
         except:
-            self.control_buttons = {"góra": pygame.K_w, "dół": pygame.K_s, "lewo": pygame.K_a, "prawo": pygame.K_d,
-                                    "strzał": pygame.K_k, "następna": pygame.K_e, "poprzednia": pygame.K_q}
+            self.control_buttons = ConfigControls()
 
             self.difficulty_level = "średni"
             self.map_layout = 1
