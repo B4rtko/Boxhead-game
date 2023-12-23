@@ -1,4 +1,6 @@
-import time, random
+import random
+import time
+
 from Bot import Bot
 
 

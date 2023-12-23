@@ -1,11 +1,16 @@
-import pygame, sys, os
-from Shooter import *
+import os
+import sys
+
+import pygame
+from pygame.locals import *
+
 from Arena import *
 from Bot import *
 from gameplay import *
+from Shooter import *
+
 
 mainClock = pygame.time.Clock()
-from pygame.locals import *
 
 
 class StartScreen:

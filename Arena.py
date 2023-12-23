@@ -1,8 +1,11 @@
+import gc  # TODO remove garbage collector
+import random
+
 import pygame
 from pygame.math import Vector2
-import gc
+
 from Shooter import GunPistol, GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower
-import random
+
 
 class Arena(object):
     """
