@@ -13,6 +13,7 @@ from src.game_elements.Shooter import *
 
 from src.game_configs.Config_difficult_level import config_difficult_level_easy, config_difficult_level_medium, config_difficult_level_hard
 from src.game_configs.Config_controls import ConfigControls
+from src.game_configs.utils import load_yaml
 
 
 main_clock = pygame.time.Clock()
@@ -31,10 +32,10 @@ class StartScreen:
         self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         pygame.mouse.set_visible(0)
 
-        self.control_buttons = None
-        self.map_layout = None
-        self.difficulty_level = None
-        self.muted = None
+        self._control_buttons = None
+        self._map_layout = None
+        self._difficulty_level = None
+        self._muted = None
         self.get_last_config()
 
         self.dict_difficulty_config = dict()
@@ -61,46 +62,62 @@ class StartScreen:
         self.set_difficulty_config()
 
         self.main_menu()
+    
+    @property
+    def map_layout(self):
+        return self._map_layout
+    
+    @map_layout.setter
+    def map_layout(self, value):
+        if not value in range(1, 6):
+            raise ValueError
+
+        self._map_layout = value
+    
+    @property
+    def control_buttons(self):
+        return self._control_buttons
+    
+    @control_buttons.setter
+    def control_buttons(self, value):
+        self._control_buttons = value
+    
+    @property
+    def difficulty_level(self):
+        return self._difficulty_level
+    
+    @difficulty_level.setter
+    def difficulty_level(self, value):
+        if value not in ["łatwy", "średni", "trudny"]:
+            raise ValueError
+        self._difficulty_level = value
+    
+    @property
+    def muted(self):
+        return self._muted
+    
+    @muted.setter
+    def muted(self, value):
+        if type(value) != bool:
+            raise ValueError
+        self._muted = value
 
     def get_last_config(self):
         """
         function loads previous game configuration if such exists
         """
         try:
-            with open(os.path.join(path_media_elements, "ostatni_stan.txt"), "r") as file:
-                config = file.read()
+            config = load_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"))
 
-            data = []
-            last_data = 0
-
-            for _ in range(10):
-                param_end = config[last_data:].find(":::")
-                param = config[last_data:last_data + param_end]
-                data.append(param)
-                last_data += param_end + 3
-
-            # data[0] is map indicator in config file and there are 5 maps available, so the value needs to be between 1 and 5
-            if data[0] in ["1", "2", "3", "4", "5"]:
-                self.map_layout = int(data[0])
-            else: raise ValueError
-
-            self.control_buttons = ConfigControls(*[int(data[i]) for i in range(1, 8)])
-
-            if data[8] in ["łatwy", "średni", "trudny"]:
-                self.difficulty_level = data[8]
-            else: raise ValueError
-
-            if data[9] == "True":
-                self.muted = True
-            else:
-                self.muted = False
+            self.map_layout = config["map"]["layout"]
+            self.control_buttons = ConfigControls(**config["controls"])
+            self.difficulty_level = config["difficulty_level"]
+            self.muted = config["music"]["is_muted"]
 
         except:
-            self.control_buttons = ConfigControls()
-
-            self.difficulty_level = "średni"
             self.map_layout = 1
-
+            self.control_buttons = ConfigControls()
+            self.difficulty_level = "średni"
             self.muted = False
 
     def set_difficulty_config(self):
