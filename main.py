@@ -13,7 +13,7 @@ from src.game_elements.Shooter import *
 
 from src.game_configs.Config_difficult_level import config_difficult_level_easy, config_difficult_level_medium, config_difficult_level_hard
 from src.game_configs.Config_controls import ConfigControls
-from src.game_configs.utils import load_yaml
+from src.game_configs.utils import load_yaml, save_yaml
 
 
 main_clock = pygame.time.Clock()
@@ -62,6 +62,28 @@ class StartScreen:
         self.set_difficulty_config()
 
         self.main_menu()
+    
+    def __export_config_dict(self):
+        controls = self.control_buttons
+        config_dict = {
+            "map": { 
+                "layout": self.map_layout
+            },
+            "controls": {
+                "góra": controls["góra"],
+                "dół": controls["dół"],
+                "lewo": controls["lewo"],
+                "prawo": controls["prawo"],
+                "strzał": controls["strzał"],
+                "następna": controls["następna"],
+                "poprzednia": controls["poprzednia"],
+            },
+            "difficulty_level": self.difficulty_level,
+            "music": {
+                "is_muted": self.muted
+            },
+        }
+        return config_dict
     
     @property
     def map_layout(self):
@@ -150,8 +172,7 @@ class StartScreen:
                     self.move_pressed = True
                 if event.type == KEYUP:
                     if event.key == K_ESCAPE:
-                        with open(os.path.join(path_media_elements, "ostatni_stan.txt"), "w") as file:
-                            file.write(f"{self.map_layout}:::{self.control_buttons['góra']}:::{self.control_buttons['dół']}:::{self.control_buttons['lewo']}:::{self.control_buttons['prawo']}:::{self.control_buttons['strzał']}:::{self.control_buttons['następna']}:::{self.control_buttons['poprzednia']}:::{self.difficulty_level}:::{self.muted}:::")
+                        save_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"), self.__export_config_dict())
                         pygame.quit()
                         sys.exit()
                     if event.key == K_m and not self.muted:
@@ -190,8 +211,7 @@ class StartScreen:
             elif highlighted == "o autorze" and click:
                 CreditsScreen(self)
             elif highlighted == "zakoncz" and click:
-                with open(os.path.join(path_media_elements, "ostatni_stan.txt"), "w") as file:
-                    file.write(f"{self.map_layout}:::{self.control_buttons['góra']}:::{self.control_buttons['dół']}:::{self.control_buttons['lewo']}:::{self.control_buttons['prawo']}:::{self.control_buttons['strzał']}:::{self.control_buttons['następna']}:::{self.control_buttons['poprzednia']}:::{self.difficulty_level}:::{self.muted}:::")
+                save_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"), self.__export_config_dict())
                 pygame.quit()
                 sys.exit()
 
