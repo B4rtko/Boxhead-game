@@ -43,9 +43,10 @@ class StartScreen:
         self._map_layout = None
         self._difficulty_level = None
         self._muted = None
+
+        self.dict_difficulty_config = None
         self.get_last_config()
 
-        self.dict_difficulty_config = dict()
 
         pygame.mixer.music.load(os.path.join(path_media_elements, "dzwieki", "background.mp3"))
         if not self.muted:
@@ -64,8 +65,6 @@ class StartScreen:
         self.ind_position = config_start_screen_layout
 
         self.move_pressed = False
-
-        self.set_difficulty_config()
 
         self.main_menu()
     
@@ -119,7 +118,16 @@ class StartScreen:
         if value not in ["łatwy", "średni", "trudny"]:
             raise ValueError
         self._difficulty_level = value
-    
+
+        if value == "łatwy":
+            self.dict_difficulty_config = config_difficult_level_easy
+
+        elif value == "średni":
+            self.dict_difficulty_config = config_difficult_level_medium
+
+        elif value == "trudny":
+            self.dict_difficulty_config = config_difficult_level_hard
+
     @property
     def muted(self):
         return self._muted
@@ -147,19 +155,6 @@ class StartScreen:
             self.control_buttons = ConfigControls()
             self.difficulty_level = "średni"
             self.muted = False
-
-    def set_difficulty_config(self):
-        """
-        function sets game aspects depending on chosen difficulty level
-        """
-        if self.difficulty_level == "łatwy":
-            self.dict_difficulty_config = config_difficult_level_easy
-
-        elif self.difficulty_level == "średni":
-            self.dict_difficulty_config = config_difficult_level_medium
-
-        elif self.difficulty_level == "trudny":
-            self.dict_difficulty_config = config_difficult_level_hard
 
     def main_menu(self):
         """
