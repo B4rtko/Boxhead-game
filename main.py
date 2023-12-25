@@ -13,6 +13,13 @@ from src.game_elements.Shooter import *
 
 from src.game_configs.Config_difficult_level import config_difficult_level_easy, config_difficult_level_medium, config_difficult_level_hard
 from src.game_configs.Config_controls import ConfigControls
+from src.game_configs.Config_layouts import (
+    config_control_screen_layout,
+    config_difficulty_screen_layout,
+    config_option_screen_layout,
+    config_pause_screen_layout,
+    config_start_screen_layout,
+)
 from src.game_configs.utils import load_yaml, save_yaml
 
 
@@ -54,8 +61,7 @@ class StartScreen:
         self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_glowne.png"))
         self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
 
-        self.ind_position = {"graj": (520, 140), "opcje": (520, 275), "instrukcja": (520, 405),
-                             "wyniki": (520, 535), "o autorze": (520, 665), "zakoncz": (520, 795)}
+        self.ind_position = config_start_screen_layout
 
         self.move_pressed = False
 
@@ -239,8 +245,7 @@ class OptionScreen:
         self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje.png"))
         self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
 
-        self.ind_position = {"mapa": (520, 275), "sterowanie": (520, 405),
-                             "trudność": (520, 535), "powrót": (520, 665)}
+        self.ind_position = config_option_screen_layout
 
         self.move_pressed = False
         self.muted = self.menu.muted
@@ -424,8 +429,7 @@ class OptionControlScreen:
         self.image_control = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_sterowanie.png"))
         self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
 
-        self.ind_position = {"góra": (1303, 79), "dół": (1303, 208), "lewo": (1303, 338), "prawo": (1303, 468),
-                             "strzał": (1303, 598), "następna": (1303, 728), "poprzednia": (1303, 858)}
+        self.ind_position = config_control_screen_layout
 
         self.move_pressed = False
         self.muted = self.option.menu.muted
@@ -592,7 +596,7 @@ class OptionDifficultyScreen:
         self.image_difficulty = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_poziom_trudności.png"))
         self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
 
-        self.ind_position = {"łatwy": (1303, 338), "średni": (1303, 468), "trudny": (1303, 598)}
+        self.ind_position = config_difficulty_screen_layout
 
         self.move_pressed = False
         self.muted = self.option.menu.muted
@@ -884,7 +888,7 @@ class PauseScreen:
         self.image_pause = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "pauza_przyciski.png"))
         self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik_bialy.png"))
 
-        self.ind_position = {"wznów": (1130, 519), "zakończ": (1130, 650)}
+        self.ind_position = config_pause_screen_layout
 
         self.move_pressed = False
         self.muted = self.game.menu.muted
