@@ -295,7 +295,13 @@ class Arena(object):
                                 loop = True
                                 break
 
-            GunPack(rand_pos_x, rand_pos_y, self)
+            gun_pack = GunPack(
+                x_min=rand_pos_x,
+                y_min=rand_pos_y,
+                arena_game_screen=self.game_screen,
+                arena_game_player=self.game_player
+            )
+            self.gun_packs.append(gun_pack)
 
     def draw(self):
         """
@@ -338,10 +344,17 @@ class GunPack(object):
     """
     Gun Pack instance
     """
-    def __init__(self, x_min, y_min, arena):
+    def __init__(
+        self,
+        x_min: int,
+        y_min: int,
+        arena_game_screen: pygame.surface.Surface,
+        arena_game_player: Shooter
+    ) -> None:
         length = 15
-        self.arena = arena
-        self.player = self.arena.game_player
+
+        self.arena_game_screen = arena_game_screen
+        self.player = arena_game_player
 
         self.rect = (x_min, y_min, length, length)
         self.pos = (x_min+length/2, y_min+length/2)
@@ -352,13 +365,11 @@ class GunPack(object):
         i = random.randint(0,len(types)-1)
         self.type = types[i]
 
-        arena.gun_packs.append(self)
-
     def draw(self):
         """
         function that maintains drawing arena-related stuff; it is run by the Game object in loop
         """
-        pygame.draw.rect(self.arena.game_screen, (255, 120, 0), self.rect)
+        pygame.draw.rect(self.arena_game_screen, (255, 120, 0), self.rect)
 
     def if_picked(self):
         """
