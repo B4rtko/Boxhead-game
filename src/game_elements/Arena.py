@@ -11,6 +11,8 @@ from src.game_elements.Shooter import (
     Shooter,
 )
 from src.game_configs.Config_arena_sectors import (
+    SectorBotDirectionsBase,
+    Sector1BotDirections,
     Sector2BotDirections,
     Sector3BotDirections,
     Sector4BotDirections,
@@ -374,6 +376,27 @@ class SectorBase:
         self.arena.sectors[sector] = self  # TODO change way of work
         self.vector = None
         self.close = self.close_sectors()
+    
+    @property
+    def config_arena_sector(self) -> SectorBotDirectionsBase:
+        raise NotImplementedError
+    
+    def direction_dict(self):
+        """
+        function matches current sector with direction that bot should keep to reach sector that player is currently in
+        """
+        dir_match = self.config_arena_sector.dir_match_direction
+        dir_vector = self.config_arena_sector.dir_vector
+
+        self.vector = dir_vector[dir_match[self.sector][self.arena.game_player.active_sector]]
+
+    def close_sectors(self):
+        """
+        function is used to match close sectors to the current one
+        :return: list
+        """
+        dir_match = self.config_arena_sector.dir_match_close_sectors
+        return dir_match[self.sector]
 
     def position_check(self, other):
         """
@@ -398,16 +421,7 @@ class Sector1(SectorBase):
     """
     Sector instance
     """
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        close_to_11 = [11]
-
-        dir_match = {11: close_to_11}
-
-        return dir_match[self.sector]
+    config_arena_sector: SectorBotDirectionsBase = Sector1BotDirections
 
     def tick(self):
         pass
@@ -417,85 +431,25 @@ class Sector2(SectorBase):
     """
     Sector instance
     """
-    def direction_dict(self):
-        """
-        function matches current sector with direction that bot should keep to reach sector that player is currently in
-        """
-        dir_match = Sector2BotDirections.dir_match_direction
-        dir_vector = Sector2BotDirections.dir_vector
-
-        self.vector = dir_vector[dir_match[self.sector][self.arena.game_player.active_sector]]
-
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        dir_match = Sector2BotDirections.dir_match_close_sectors
-        return dir_match[self.sector]
+    config_arena_sector: SectorBotDirectionsBase = Sector2BotDirections
 
 
 class Sector3(SectorBase):
     """
     Sector instance
     """
-    def direction_dict(self):
-        """
-        function matches current sector with direction that bot should keep to reach sector that player is currently in
-        """
-        dir_match = Sector3BotDirections.dir_match_direction
-        dir_vector = Sector3BotDirections.dir_vector
-
-        self.vector = dir_vector[dir_match[self.sector][self.arena.game_player.active_sector]]
-
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        dir_match = Sector3BotDirections.dir_match_close_sectors
-        return dir_match[self.sector]
+    config_arena_sector: SectorBotDirectionsBase = Sector3BotDirections
 
 
 class Sector4(SectorBase):
     """
     Sector instance
     """
-    def direction_dict(self):
-        """
-        function matches current sector with direction that bot should keep to reach sector that player is currently in
-        """
-        dir_match = Sector4BotDirections.dir_match_direction
-        dir_vector = Sector4BotDirections.dir_vector
-
-        self.vector = dir_vector[dir_match[self.sector][self.arena.game_player.active_sector]]
-
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        dir_match = Sector4BotDirections.dir_match_close_sectors
-        return dir_match[self.sector]
+    config_arena_sector: SectorBotDirectionsBase = Sector4BotDirections
 
 
 class Sector5(SectorBase):
     """
     Sector instance
     """
-    def direction_dict(self):
-        """
-        function matches current sector with direction that bot should keep to reach sector that player is currently in
-        """
-        dir_match = Sector5BotDirections.dir_match_direction
-        dir_vector = Sector5BotDirections.dir_vector
-
-        self.vector = dir_vector[dir_match[self.sector][self.arena.game_player.active_sector]]
-
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        dir_match = Sector5BotDirections.dir_match_close_sectors
-        return dir_match[self.sector]
+    config_arena_sector: SectorBotDirectionsBase = Sector5BotDirections
