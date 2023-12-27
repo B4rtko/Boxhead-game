@@ -1,7 +1,6 @@
 import random
 
 import pygame
-from pygame.math import Vector2
 
 from src.game_elements.Shooter import GunPistol, GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower
 from src.game_configs.Config_arena_sectors import (
@@ -353,28 +352,14 @@ class GunPack(object):
             self.picked = True
 
 
-class Sector1:
-    """
-    Sector instance
-    """
-    def __init__(self, arena, sector, xmin, xmax, ymin, ymax):
+class SectorBase:
+    def __init__(self, arena, sector, xmin, xmax, ymin, ymax) -> None:
         self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
         self.arena = arena
         self.sector = sector
-        self.arena.sectors[sector] = self
+        self.arena.sectors[sector] = self  # TODO change way of work
         self.vector = None
         self.close = self.close_sectors()
-
-    def close_sectors(self):
-        """
-        function is used to match close sectors to the current one
-        :return: list
-        """
-        close_to_11 = [11]
-
-        dir_match = {11: close_to_11}
-
-        return dir_match[self.sector]
 
     def position_check(self, other):
         """
@@ -388,21 +373,36 @@ class Sector1:
             return False
 
     def tick(self):
-        pass
+        """
+        function keeps sector's direction updated with the current player's active sector
+        """
+        if self.sector != self.arena.game.player.active_sector:
+            self.direction_dict()
 
 
-class Sector2:
+class Sector1(SectorBase):
     """
     Sector instance
     """
-    def __init__(self, arena, sector, xmin, xmax, ymin, ymax):
-        self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
-        self.arena = arena
-        self.sector = sector
-        self.arena.sectors[sector] = self
-        self.vector = None
-        self.close = self.close_sectors()
+    def close_sectors(self):
+        """
+        function is used to match close sectors to the current one
+        :return: list
+        """
+        close_to_11 = [11]
 
+        dir_match = {11: close_to_11}
+
+        return dir_match[self.sector]
+
+    def tick(self):
+        pass
+
+
+class Sector2(SectorBase):
+    """
+    Sector instance
+    """
     def direction_dict(self):
         """
         function matches current sector with direction that bot should keep to reach sector that player is currently in
@@ -420,37 +420,11 @@ class Sector2:
         dir_match = Sector2BotDirections.dir_match_close_sectors
         return dir_match[self.sector]
 
-    def position_check(self, other):
-        """
-        function can be used to check if player or bot is in current sector
-        :param other: bot or player instance
-        :return: bool
-        """
-        if (self.xmin <= other.pos[0] < self.xmax) and (self.ymin <= other.pos[1] < self.ymax):
-            return True
-        else:
-            return False
 
-    def tick(self):
-        """
-        function keeps sector's direction updated with the current player's active sector
-        """
-        if self.sector != self.arena.game.player.active_sector:
-            self.direction_dict()
-
-
-class Sector3:
+class Sector3(SectorBase):
     """
     Sector instance
     """
-    def __init__(self, arena, sector, xmin, xmax, ymin, ymax):
-        self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
-        self.arena = arena
-        self.sector = sector
-        self.arena.sectors[sector] = self
-        self.vector = None
-        self.close = self.close_sectors()
-
     def direction_dict(self):
         """
         function matches current sector with direction that bot should keep to reach sector that player is currently in
@@ -468,37 +442,11 @@ class Sector3:
         dir_match = Sector3BotDirections.dir_match_close_sectors
         return dir_match[self.sector]
 
-    def position_check(self, other):
-        """
-        function can be used to check if player or bot is in current sector
-        :param other: bot or player instance
-        :return: bool
-        """
-        if (self.xmin <= other.pos[0] < self.xmax) and (self.ymin <= other.pos[1] < self.ymax):
-            return True
-        else:
-            return False
 
-    def tick(self):
-        """
-        function keeps sector's direction updated with the current player's active sector
-        """
-        if self.sector != self.arena.game.player.active_sector:
-            self.direction_dict()
-
-
-class Sector4:
+class Sector4(SectorBase):
     """
     Sector instance
     """
-    def __init__(self, arena, sector, xmin, xmax, ymin, ymax):
-        self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
-        self.arena = arena
-        self.sector = sector
-        self.arena.sectors[sector] = self
-        self.vector = None
-        self.close = self.close_sectors()
-
     def direction_dict(self):
         """
         function matches current sector with direction that bot should keep to reach sector that player is currently in
@@ -516,37 +464,11 @@ class Sector4:
         dir_match = Sector4BotDirections.dir_match_close_sectors
         return dir_match[self.sector]
 
-    def position_check(self, other):
-        """
-        function can be used to check if player or bot is in current sector
-        :param other: bot or player instance
-        :return: bool
-        """
-        if (self.xmin <= other.pos[0] < self.xmax) and (self.ymin <= other.pos[1] < self.ymax):
-            return True
-        else:
-            return False
 
-    def tick(self):
-        """
-        function keeps sector's direction updated with the current player's active sector
-        """
-        if self.sector != self.arena.game.player.active_sector:
-            self.direction_dict()
-
-
-class Sector5:
+class Sector5(SectorBase):
     """
     Sector instance
     """
-    def __init__(self, arena, sector, xmin, xmax, ymin, ymax):
-        self.xmin, self.xmax, self.ymin, self.ymax = xmin, xmax, ymin, ymax
-        self.arena = arena
-        self.sector = sector
-        self.arena.sectors[sector] = self
-        self.vector = None
-        self.close = self.close_sectors()
-
     def direction_dict(self):
         """
         function matches current sector with direction that bot should keep to reach sector that player is currently in
@@ -562,23 +484,4 @@ class Sector5:
         :return: list
         """
         dir_match = Sector5BotDirections.dir_match_close_sectors
-
         return dir_match[self.sector]
-
-    def position_check(self, other):
-        """
-        function can be used to check if player or bot is in current sector
-        :param other: bot or player instance
-        :return: bool
-        """
-        if (self.xmin <= other.pos[0] < self.xmax) and (self.ymin <= other.pos[1] < self.ymax):
-            return True
-        else:
-            return False
-
-    def tick(self):
-        """
-        function keeps sector's direction updated with the current player's active sector
-        """
-        if self.sector != self.arena.game.player.active_sector:
-            self.direction_dict()
