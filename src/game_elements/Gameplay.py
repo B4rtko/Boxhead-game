@@ -28,7 +28,7 @@ class GamePlay:
         """
         ys1 = list(range(20, 1060, 5))
         ys2 = list(range(20, 1060, 5))
-        x1, x2 = 220, self.game.arena.size[0]-20
+        x1, x2 = 220, self.game.arena.game_screen_size[0]-20
 
         for y in range(20, 1060, 5):
             for ban in self.game.arena.banned:

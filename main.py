@@ -1031,7 +1031,12 @@ class Game(object):
         self.map_layout = menu.map_layout
 
         self.player = Shooter(self)
-        self.arena = Arena(self)
+        self.arena: Arena = Arena(
+            game_screen = self.screen,
+            gunpack_max_amount = self.menu.dict_difficulty_config["gunpack_max_amount"],
+            map_layout = self.map_layout,
+            game_player = self.player,
+        )
         self.bots = []
         self.gameplay = GamePlay(self)
 
