@@ -299,7 +299,7 @@ class Arena(object):
                 x_min=rand_pos_x,
                 y_min=rand_pos_y,
                 arena_game_screen=self.game_screen,
-                arena_game_player=self.game_player
+                player_pos=self.game_player.pos,
             )
             self.gun_packs.append(gun_pack)
 
@@ -349,12 +349,12 @@ class GunPack(object):
         x_min: int,
         y_min: int,
         arena_game_screen: pygame.surface.Surface,
-        arena_game_player: Shooter
+        player_pos: Tuple[int, int],
     ) -> None:
         length = 15
 
         self.arena_game_screen = arena_game_screen
-        self.player = arena_game_player
+        self.player_pos = player_pos
 
         self.rect = (x_min, y_min, length, length)
         self.pos = (x_min+length/2, y_min+length/2)
@@ -375,7 +375,7 @@ class GunPack(object):
         """
         function checks if instance is picked by player and if so marks self.picked var as True
         """
-        if abs(self.player.pos[0]-self.pos[0]) < 25 and abs(self.player.pos[1]-self.pos[1]) < 25:
+        if abs(self.player_pos[0]-self.pos[0]) < 25 and abs(self.player_pos[1]-self.pos[1]) < 25:
             self.picked = True
 
 
