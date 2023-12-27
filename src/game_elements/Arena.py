@@ -1,4 +1,3 @@
-import gc  # TODO remove garbage collector
 import random
 
 import pygame
@@ -291,7 +290,6 @@ class Arena(object):
                 i.type(self.game.player)
                 self.gun_packs.remove(i)
                 del self
-                gc.collect()
             else:
                 i.draw()
 
