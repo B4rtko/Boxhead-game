@@ -8,6 +8,7 @@ sys.path.append(".")
 
 from src.game_elements.Arena import *
 from src.game_elements.Bot import *
+from src.game_elements.Game import Game
 from src.game_elements.Gameplay import *
 from src.game_elements.Shooter import *
 
@@ -17,15 +18,13 @@ from src.game_configs.Config_layouts import (
     config_control_screen_layout,
     config_difficulty_screen_layout,
     config_option_screen_layout,
-    config_pause_screen_layout,
     config_start_screen_layout,
 )
 from src.game_configs.utils import load_yaml, save_yaml
 
 
-main_clock = pygame.time.Clock()
-
-path_media_elements = os.path.join("src", "media_elements")
+MAIN_CLOCK = pygame.time.Clock()
+PATH_MEDIA_ELEMENTS = os.path.join("src", "media_elements")
 
 
 class StartScreen:
@@ -48,19 +47,19 @@ class StartScreen:
         self.get_last_config()
 
 
-        pygame.mixer.music.load(os.path.join(path_media_elements, "dzwieki", "background.mp3"))
+        pygame.mixer.music.load(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "background.mp3"))
         if not self.muted:
             pygame.mixer.music.play(-1)
 
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
+        self.sound_select = pygame.mixer.Sound(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "menu_select.wav"))
 
         self.myfont = pygame.font.SysFont('Comic Sans MS', 40)
 
         self.highlight_ind = 0
         self.buttons = ["graj", "opcje", "instrukcja", "wyniki", "o autorze", "zakoncz"]
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_glowne.png"))
-        self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_glowne.png"))
+        self.image_index = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "wskaznik.png"))
 
         self.ind_position = config_start_screen_layout
 
@@ -143,7 +142,7 @@ class StartScreen:
         function loads previous game configuration if such exists
         """
         try:
-            config = load_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"))
+            config = load_yaml(os.path.join(PATH_MEDIA_ELEMENTS, "ostatni_stan.yaml"))
 
             self.map_layout = config["map"]["layout"]
             self.control_buttons = ConfigControls(**config["controls"])
@@ -173,7 +172,7 @@ class StartScreen:
                     self.move_pressed = True
                 if event.type == KEYUP:
                     if event.key == K_ESCAPE:
-                        save_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"), self.__export_config_dict())
+                        save_yaml(os.path.join(PATH_MEDIA_ELEMENTS, "ostatni_stan.yaml"), self.__export_config_dict())
                         pygame.quit()
                         sys.exit()
                     if event.key == K_m and not self.muted:
@@ -202,7 +201,11 @@ class StartScreen:
             self.screen.blit(self.image_index, self.ind_position[self.buttons[self.highlight_ind]])
 
             if highlighted == "graj" and click:
-                Game(self)
+                Game(
+                    menu=self,
+                    path_media_elements=PATH_MEDIA_ELEMENTS,
+                    main_clock=MAIN_CLOCK,
+                )
             elif highlighted == "opcje" and click:
                 OptionScreen(self)
             elif highlighted == "instrukcja" and click:
@@ -212,12 +215,12 @@ class StartScreen:
             elif highlighted == "o autorze" and click:
                 CreditsScreen(self)
             elif highlighted == "zakoncz" and click:
-                save_yaml(os.path.join(path_media_elements, "ostatni_stan.yaml"), self.__export_config_dict())
+                save_yaml(os.path.join(PATH_MEDIA_ELEMENTS, "ostatni_stan.yaml"), self.__export_config_dict())
                 pygame.quit()
                 sys.exit()
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class OptionScreen:
@@ -232,13 +235,13 @@ class OptionScreen:
         self.screen = menu.screen
         pygame.mouse.set_visible(0)
 
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
+        self.sound_select = pygame.mixer.Sound(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "menu_select.wav"))
 
         self.highlight_ind = 0
         self.buttons = ["mapa", "sterowanie", "trudność", "powrót"]
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje.png"))
-        self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje.png"))
+        self.image_index = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "wskaznik.png"))
 
         self.ind_position = config_option_screen_layout
 
@@ -303,7 +306,7 @@ class OptionScreen:
                 self.loop = False
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class OptionMapScreen:
@@ -318,14 +321,14 @@ class OptionMapScreen:
         self.screen = option.screen
         pygame.mouse.set_visible(0)
 
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
+        self.sound_select = pygame.mixer.Sound(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "menu_select.wav"))
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_zblakly.png"))
-        self.image_map_1 = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "mapy", "menu_opcje_mapa_1.png"))
-        self.image_map_2 = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "mapy", "menu_opcje_mapa_2.png"))
-        self.image_map_3 = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "mapy", "menu_opcje_mapa_3.png"))
-        self.image_map_4 = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "mapy", "menu_opcje_mapa_4.png"))
-        self.image_map_5 = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "mapy", "menu_opcje_mapa_5.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje_zblakly.png"))
+        self.image_map_1 = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "mapy", "menu_opcje_mapa_1.png"))
+        self.image_map_2 = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "mapy", "menu_opcje_mapa_2.png"))
+        self.image_map_3 = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "mapy", "menu_opcje_mapa_3.png"))
+        self.image_map_4 = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "mapy", "menu_opcje_mapa_4.png"))
+        self.image_map_5 = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "mapy", "menu_opcje_mapa_5.png"))
 
         self.highlight_ind = self.option.menu.map_layout
         self.image_map_list = [None, self.image_map_1, self.image_map_2, self.image_map_3, self.image_map_4, self.image_map_5]
@@ -400,7 +403,7 @@ class OptionMapScreen:
                 self.loop = False
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class OptionControlScreen:
@@ -415,14 +418,14 @@ class OptionControlScreen:
         self.screen = option.screen
         pygame.mouse.set_visible(0)
 
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
+        self.sound_select = pygame.mixer.Sound(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "menu_select.wav"))
 
         self.highlight_ind = 0
         self.buttons = ["góra", "dół", "lewo", "prawo", "strzał", "następna", "poprzednia"]
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_zblakly.png"))
-        self.image_control = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_sterowanie.png"))
-        self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje_zblakly.png"))
+        self.image_control = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje_sterowanie.png"))
+        self.image_index = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "wskaznik.png"))
 
         self.ind_position = config_control_screen_layout
 
@@ -567,7 +570,7 @@ class OptionControlScreen:
                                 self.wait_loop = False
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class OptionDifficultyScreen:
@@ -582,14 +585,14 @@ class OptionDifficultyScreen:
         self.screen = option.screen
         pygame.mouse.set_visible(0)
 
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
+        self.sound_select = pygame.mixer.Sound(os.path.join(PATH_MEDIA_ELEMENTS, "dzwieki", "menu_select.wav"))
 
         self.buttons = ["łatwy", "średni", "trudny"]
         self.highlight_ind = self.buttons.index(self.option.menu.difficulty_level)
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_zblakly.png"))
-        self.image_difficulty = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_opcje_poziom_trudności.png"))
-        self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje_zblakly.png"))
+        self.image_difficulty = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_opcje_poziom_trudności.png"))
+        self.image_index = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "wskaznik.png"))
 
         self.ind_position = config_difficulty_screen_layout
 
@@ -661,7 +664,7 @@ class OptionDifficultyScreen:
                 self.loop = False
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class HelpScreen:
@@ -675,7 +678,7 @@ class HelpScreen:
         self.screen = menu.screen
         pygame.mouse.set_visible(0)
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_instrukcja.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_instrukcja.png"))
 
         self.muted = self.menu.muted
 
@@ -708,7 +711,7 @@ class HelpScreen:
             self.screen.blit(self.image_menu, self.image_menu.get_rect())
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
 
 class HighScoreScreen:
@@ -724,9 +727,9 @@ class HighScoreScreen:
         self.screen = menu.screen
         pygame.mouse.set_visible(0)
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_tabela_wynikow.png"))
-        self.image_field_left = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "tabela_wynikow_pole_lewo.png"))
-        self.image_field_right = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "tabela_wynikow_pole_prawo.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_tabela_wynikow.png"))
+        self.image_field_left = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "tabela_wynikow_pole_lewo.png"))
+        self.image_field_right = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "tabela_wynikow_pole_prawo.png"))
 
         self.result_dict_left = dict()
         self.result_dict_right = dict()
@@ -770,7 +773,7 @@ class HighScoreScreen:
                 self.screen.blit(self.result_dict_right[i], (1080, 230+(i-12)*50))
 
             pygame.display.flip()
-            main_clock.tick(30)
+            MAIN_CLOCK.tick(30)
 
     def score_load(self):
         """
@@ -783,7 +786,7 @@ class HighScoreScreen:
             return float(el[1])
 
         try:
-            with open(os.path.join(path_media_elements, "tablica_wynikow.txt"), "r") as file:
+            with open(os.path.join(PATH_MEDIA_ELEMENTS, "tablica_wynikow.txt"), "r") as file:
                 score = file.read()
         except:
             score = ""
@@ -827,7 +830,7 @@ class CreditsScreen:
         self.screen = menu.screen
         pygame.mouse.set_visible(0)
 
-        self.image_menu = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "menu_o_autorze.png"))
+        self.image_menu = pygame.image.load(os.path.join(PATH_MEDIA_ELEMENTS, "grafika_menu", "menu_o_autorze.png"))
 
         self.muted = self.menu.muted
 
@@ -860,245 +863,7 @@ class CreditsScreen:
             self.screen.blit(self.image_menu, self.image_menu.get_rect())
 
             pygame.display.flip()
-            main_clock.tick(30)
-
-
-class PauseScreen:
-    """
-    Game pause screen instance
-    """
-    def __init__(self, game):
-        pygame.init()
-
-        self.game = game
-        self.screen = game.screen
-        pygame.mouse.set_visible(0)
-
-        self.sound_select = pygame.mixer.Sound(os.path.join(path_media_elements, "dzwieki", "menu_select.wav"))
-
-        self.highlight_ind = 0
-        self.buttons = ["wznów", "zakończ"]
-
-        self.image_game = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "obraz_przed_pauza.png"))
-        self.image_pause = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "pauza_przyciski.png"))
-        self.image_index = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "wskaznik_bialy.png"))
-
-        self.ind_position = config_pause_screen_layout
-
-        self.move_pressed = False
-        self.muted = self.game.menu.muted
-
-        self.loop = True
-        self.pause()
-
-    def pause(self):
-        """
-        function with main loop
-        """
-        while self.loop:
-            self.game.tps_delta += self.game.tps_clock.tick() / 1000
-            while self.game.tps_delta > 1 / self.game.tps_max:
-                self.game.tps_delta -= 1 / self.game.tps_max
-
-            click = False
-            highlighted = self.buttons[self.highlight_ind]
-
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == KEYDOWN and event.key in [K_UP, K_w, K_DOWN, K_s] and (not self.move_pressed) and (not self.muted):
-                    self.sound_select.play()
-                    self.move_pressed = True
-                if event.type == KEYUP:
-                    if event.key in [K_ESCAPE, K_p]:
-                        self.loop = False
-                    if event.key == K_m and not self.muted:
-                        self.muted = True
-                        self.game.muted = True
-                        self.game.menu.muted = True
-                        pygame.mixer.music.stop()
-                    elif event.key == K_m and self.muted:
-                        self.muted = False
-                        self.game.muted = False
-                        self.game.menu.muted = False
-                        pygame.mixer.music.play(-1)
-                    if event.key in [K_RETURN, K_SPACE]:
-                        click = True
-                    if event.key in [K_UP, K_w]:
-                        self.move_pressed = False
-                        if self.highlight_ind > 0:
-                            self.highlight_ind -= 1
-                        else:
-                            self.highlight_ind = len(self.buttons)-1
-                    if event.key in [K_DOWN, K_s]:
-                        self.move_pressed = False
-                        if self.highlight_ind < len(self.buttons)-1:
-                            self.highlight_ind += 1
-                        else:
-                            self.highlight_ind = 0
-            self.screen.fill((0,0,0))
-            self.screen.blit(self.image_game, (0,0))
-            self.screen.blit(self.image_pause, (0,0))
-            self.screen.blit(self.image_index, self.ind_position[self.buttons[self.highlight_ind]])
-
-            if highlighted == "wznów" and click:
-                    self.loop = False
-            elif highlighted == "zakończ" and click:
-                    self.loop = False
-                    ResultScreen(self.game)
-                    self.game.loop = False
-
-            pygame.display.flip()
-            main_clock.tick(30)
-
-
-class ResultScreen:
-    """
-    Game over screen instance
-    """
-    def __init__(self, game):
-        pygame.init()
-
-        self.game = game
-        self.screen = game.screen
-        pygame.mouse.set_visible(0)
-        self.myfont = pygame.font.SysFont('Comic Sans MS', 40)
-
-        self.image_result = pygame.image.load(os.path.join(path_media_elements, "grafika_menu", "podawanie_wyniku.png"))
-
-        self.name = ""
-
-        self.loop = True
-        self.result()
-
-    def result(self):
-        """
-        function with main loop
-        """
-        while self.loop:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                if event.type == KEYUP:
-                    if event.key == K_ESCAPE:
-                        self.loop = False
-                        self.game.break_loop = True
-                    if event.key == K_RETURN and len(self.name)>0:
-                        self.loop = False
-                        self.game.break_loop = True
-
-                        with open(os.path.join(path_media_elements, "tablica_wynikow.txt"), "a")as file:
-                            file.write(f"{self.name}:::{self.game.player.score};;;")
-                    if event.key == K_BACKSPACE and len(self.name)>0:
-                        self.name = self.name[:-1]
-                    else:
-                        if len(self.name)<10:
-                            key = str(pygame.key.name(event.key))
-                            if len(key) == 1:
-                                self.name += key
-
-            score_surface = self.myfont.render(f"{self.game.player.score}", False, (255, 255, 255))
-            name_surface = self.myfont.render(f"{self.name}", False, (255, 255, 255))
-            self.screen.fill((0,0,0))
-            self.screen.blit(self.image_result, (0,0))
-            self.game.screen.blit(score_surface, (960, 435))
-            self.game.screen.blit(name_surface, (920, 590))
-
-            pygame.display.flip()
-            main_clock.tick(30)
-
-
-class Game(object):
-    """
-    Game screen instance
-    """
-    def __init__(self, menu):
-        self.tps_max = 40
-        pygame.font.init()
-        self.myfont = pygame.font.SysFont('Comic Sans MS', 18)
-        pygame.mixer.pre_init(44100, -16, 1, 512)
-        pygame.init()
-
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-
-        self.tps_clock = pygame.time.Clock()
-        self.tps_delta = 0.0
-
-        self.menu = menu
-        self.control_buttons = menu.control_buttons
-        self.map_layout = menu.map_layout
-
-        self.player = Shooter(self)
-        self.arena: Arena = Arena(
-            game_screen = self.screen,
-            gunpack_max_amount = self.menu.dict_difficulty_config["gunpack_max_amount"],
-            map_layout = self.map_layout,
-            game_player = self.player,
-        )
-        self.bots = []
-        self.gameplay = GamePlay(self)
-
-        self.muted = self.menu.muted
-
-        self.loop = True
-        self.pause_loop = False
-        self.break_loop = False
-
-        while self.loop:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit(0)
-                elif event.type == pygame.KEYUP and event.key in [pygame.K_ESCAPE, pygame.K_p]:
-                    pygame.image.save(self.screen, os.path.join(path_media_elements, "grafika_menu", "obraz_przed_pauza.png"))
-                    PauseScreen(self)
-                if event.type == pygame.KEYUP and event.key == K_m and not self.muted:
-                    self.muted = True
-                    self.menu.muted = True
-                    pygame.mixer.music.stop()
-                elif event.type == pygame.KEYUP and event.key == K_m and self.muted:
-                    self.muted = False
-                    self.menu.muted = False
-                    pygame.mixer.music.play(-1)
-
-            if self.player.hit_points_current <= 0:
-                ResultScreen(self)
-
-            if self.break_loop:
-                break
-
-            # ticking
-            self.tps_delta += self.tps_clock.tick()/1000
-            while self.tps_delta > 1/self.tps_max:
-                self.tick()
-                self.tps_delta -= 1/self.tps_max
-
-            # drawing
-            self.screen.fill((39, 39, 39))
-            self.draw()
-            pygame.display.flip()
-
-    def tick(self):
-        """
-        function maintains game instances (player, bots, arena) ticks
-        """
-        self.player.tick()
-        for sec in self.arena.sectors:
-            self.arena.sectors[sec].tick()
-        for bot in self.bots:
-            bot.tick()
-        self.gameplay.tick()
-
-    def draw(self):
-        """
-        function maintains drawing game object on screen
-        """
-        self.arena.draw()
-        self.player.draw()
-        self.gameplay.draw()
-        for bot in self.bots:
-            bot.draw()
+            MAIN_CLOCK.tick(30)
 
 
 if __name__ == "__main__":
