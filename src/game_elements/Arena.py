@@ -356,14 +356,38 @@ class GunPack(object):
         self.arena_game_screen = arena_game_screen
         self.player_pos = player_pos
 
-        self.rect = (x_min, y_min, length, length)
-        self.pos = (x_min+length/2, y_min+length/2)
+        self._rect = (x_min, y_min, length, length)
+        self._pos = (x_min+length/2, y_min+length/2)
 
-        self.picked = False
+        self._picked = False
+        self._type = self.__generate_type()
+    
+    @property
+    def rect(self):
+        return self._rect
+    
+    @property
+    def pos(self):
+        return self._pos
+    
+    @property
+    def type(self):
+        return self._type
+    
+    @property
+    def picked(self):
+        return self._picked
+    
+    @picked.setter
+    def picked(self, value):
+        if type(value) != bool:
+            raise TypeError
+        self._picked = value
 
-        types = [GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower]
-        i = random.randint(0,len(types)-1)
-        self.type = types[i]
+    def __generate_type(self):
+        possible_types = [GunRifle, GunShotgun, GunRocketLauncher, GunFlameThrower]
+        i = random.randint(0,len(possible_types)-1)
+        return possible_types[i]
 
     def draw(self):
         """
